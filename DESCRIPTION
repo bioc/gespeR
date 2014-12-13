@@ -1,0 +1,24 @@
+Package: gespeR
+Imports: Matrix, glmnet, cellHTS2, Biobase, biomaRt, doParallel,
+        parallel, foreach, reshape2
+Depends: R (>= 2.10), methods, graphics, ggplot2
+Suggests: knitr
+biocViews: CellBasedAssays, Preprocessing, GeneTarget, Regression,
+        Visualization
+VignetteBuilder: knitr
+Type: Package
+Lazyload: yes
+Title: Gene-Specific Phenotype EstimatoR
+Version: 0.99.2
+Date: 2014-12-08
+Author: Fabian Schmich
+Maintainer: Fabian Schmich <fabian.schmich@bsse.ethz.ch>
+Description: Estimates gene-specific phenotypes from off-target
+        confounded RNAi screens. The phenotype of each siRNA is modeled
+        based on on-targeted and off-targeted genes, using a
+        regularized linear regression model.
+License: GPL-3
+URL: http://www.cbg.ethz.ch/software/gespeR
+Collate: 'Phenotypes-class.R' 'TargetRelations-class.R'
+        'gespeR-class.R' 'gespeR-concordance.R' 'gespeR-functions.R'
+        'gespeR-generics.R' 'gespeR-methods.R' 'gespeR-package.R'
