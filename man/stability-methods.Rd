@@ -34,7 +34,8 @@ res <- gespeR(phenotypes = phenos,
  EV = 1,
  weakness = 0.8,
  ncores = 1)
-stability(res)
+stab <- stability(res)
+head(sort(stab$frequency, decreasing = TRUE))
 }
 \author{
 Fabian Schmich
