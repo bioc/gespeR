@@ -160,7 +160,9 @@ setMethod("gespeR",
 #'  weakness = 0.8,
 #'  ncores = 1)
 #' stab <- stability(res)
-#' head(sort(stab$frequency, decreasing = TRUE))
+#' ans <- merge(as.data.frame(gsp(res)), as.data.frame(stability(res)), by = "ID")
+#' colnames(ans)[2:3] <- c("Phenotype", "Stability")
+#' ans[order(ans$Stability, decreasing = TRUE),]
 setGeneric(name="stability", def=function(object) standardGeneric("stability"))
 #' @rdname stability-methods
 setMethod(f="stability",
@@ -168,7 +170,10 @@ setMethod(f="stability",
           function(object) {
             if (object@is.fitted) {
               if(object@model$type == "stability") {
-                return(object@model$stability)
+                #return(object@model$stability)
+                Phenotypes(phenotypes = object@model$stability$frequency[object@model$stability$selection], 
+                           ids = names(object@model$stability$frequency)[object@model$stability$selection], 
+                           type = "GSP")
               } else {
                 warning("gespeR model not fitted in mode=stability")
               }
