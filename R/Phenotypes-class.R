@@ -176,11 +176,11 @@ setMethod("c",
             t <- unique(sapply(elements, function(x) x@type))
             if (length(t) == 1) {
               if (length(unique(sapply(elements, function(x) length(x@pnames)))) == 1)
-                samephens <- all(apply(sapply(elements, function(x) x@pnames) %>% rBind() %>% unique(), 1, function(x) length(unique(x) == 1)))
+                samephens <- all(apply(sapply(elements, function(x) x@pnames) %>% rbind() %>% unique(), 1, function(x) length(unique(x) == 1)))
               else
                 samephens <- FALSE
               if (samephens) {
-                vals <- do.call("rBind", lapply(elements, function(x) x@values))
+                vals <- do.call("rbind", lapply(elements, function(x) x@values))
                 ids <- do.call("c", lapply(elements, function(x) x@ids))
                 new("Phenotypes", 
                     type = slot(x, "type"),
