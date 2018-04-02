@@ -1,13 +1,13 @@
 #' Bind multiple phenotypes to matrix
-#' 
+#'
 #' @author Fabian Schmich
 #' @noRd
-#' 
+#'
 #' @param phenotypes list of phenotypes
 #' @return binding of phenotypes (matrix)
 .bindphens <- function(phenotypes) {
   if (length(unique(sapply(phenotypes, length))) == 1) {
-    do.call("cBind", phenotypes)
+    do.call("cbind", phenotypes)
   } else {
       warning("Cannot bind phenotypes. Unequal length.")
       return(phenotypes)
@@ -15,10 +15,10 @@
 }
 
 #' gespeR cross validation
-#' 
+#'
 #' @author Fabian Schmich
 #' @noRd
-#' 
+#'
 #' @param SSP The siRNA-specific phenotypes. Single vector for univariate, list of
 #' vectors for multivariate phenotypes.
 #' @param targets The siRNA-to-gene target relations
@@ -37,21 +37,21 @@
                      standardize = FALSE,
                      intercept = FALSE,
                      keep = TRUE,
-                     parallel = ifelse(ncores > 1, TRUE, FALSE))  
+                     parallel = ifelse(ncores > 1, TRUE, FALSE))
   stopCluster(cl)
-  if (multivar) coefficients <- do.call("cBind", coef(model, s = "lambda.1se")) else 
+  if (multivar) coefficients <- do.call("cbind", coef(model, s = "lambda.1se")) else
     coefficients <- coef(model, s = "lambda.1se")
   out <- list(type = c("cv"),
               multivar = multivar,
               fit = model$glmnet.fit,
               coefficients = coefficients,
               cv = list(name = model$name,
-                      nzero = model$nzero, 
-                      cvm = model$cvm, 
-                      cvsd = model$cvsd, 
-                      cvup = model$cvup, 
-                      cvlo = model$cvlo, 
-                      foldid = model$foldid, 
+                      nzero = model$nzero,
+                      cvm = model$cvm,
+                      cvsd = model$cvsd,
+                      cvup = model$cvup,
+                      cvlo = model$cvlo,
+                      foldid = model$foldid,
                       alpha = alpha),
               stability = list()
   )
@@ -59,10 +59,10 @@
 }
 
 #' gespeR stability selection
-#' 
+#'
 #' @author Fabian Schmich
 #' @noRd
-#' 
+#'
 #' @param SSP The siRNA-specific phenotypes
 #' @param targets The siRNA-to-gene target relations
 #' @param nboostrap The number of bootstrap samples
@@ -72,19 +72,19 @@
 #' @param weakness The weakness parameter for randomised lasso
 #' @param ncores The number of cores for parallel computation
 #' @return A list containing the fitted model and used paramers
-.gespeR.stability <- function(SSP, 
+.gespeR.stability <- function(SSP,
                               targets,
                               nbootstrap = 100,
-                              fraction = 0.5, 
-                              threshold = 0.75, 
-                              EV = 1, 
+                              fraction = 0.5,
+                              threshold = 0.75,
+                              EV = 1,
                               weakness = 1,
                               ncores = 1) {
-  stab.out <- stability.selection(x = targets, 
+  stab.out <- stability.selection(x = targets,
                                   y = SSP,
-                                  fraction = fraction, 
-                                  threshold = threshold, 
-                                  EV = EV, 
+                                  fraction = fraction,
+                                  threshold = threshold,
+                                  EV = EV,
                                   nbootstrap = nbootstrap,
                                   weakness = weakness,
                                   ncores = ncores,
@@ -101,12 +101,12 @@
 }
 
 #'  Randomized Lasso
-#'  
+#'
 #'  Based on Meinshausen and Buehlmann (2009)
-#'  
+#'
 #'  @author Fabian Schmich
 #'  @export
-#'  
+#'
 #'  @param x The design matrix
 #'  @param y The response vector
 #'  @param weakness The weakness parameter
@@ -121,7 +121,7 @@
 #'  y <- rnorm(50)
 #'  x <- matrix(runif(50 * 20), ncol = 20)
 #'  lasso.rand(x = x, y = y)
-lasso.rand <- function(x, 
+lasso.rand <- function(x,
                        y,
                        weakness = 1,
                        subsample = 1:nrow(x),
@@ -133,8 +133,8 @@ lasso.rand <- function(x,
   if (is.matrix(y) && ncol(y) > 1) {
     stop("Randomised lasso not yet implemented for multivariate phenotypes")
   }
-  if (is.null(dim(y))) y <- cbind(y)  
-  glmnet(x[subsample,], 
+  if (is.null(dim(y))) y <- cbind(y)
+  glmnet(x[subsample,],
          y[subsample,],
          family = "gaussian",
          lambda = lambda,
@@ -147,17 +147,17 @@ lasso.rand <- function(x,
 
 
 #' Stability Selection
-#' 
+#'
 #' Based on Meinshausen and Buehlmann (2009)
-#' 
+#'
 #' @author Fabian Schmich
-#' 
+#'
 #' @import doParallel
 #' @import foreach
 #' @import parallel
-#' 
+#'
 #' @export
-#' 
+#'
 #' @param x The design matrix
 #' @param y The response vector
 #' @param intercept Indicator, whether to fit an intercept
@@ -169,10 +169,10 @@ lasso.rand <- function(x,
 #' @param ncores The number of cores for parallel computation
 #' @param ... Additional arguments to \code{\link{lasso.rand}}
 #' @return A list containing selected covariates with frequencies, and the fitted model
-stability.selection <- function(x, y, 
-                                fraction = 0.5, 
-                                threshold = 0.75, 
-                                EV = 1, 
+stability.selection <- function(x, y,
+                                fraction = 0.5,
+                                threshold = 0.75,
+                                EV = 1,
                                 nbootstrap = 100,
                                 weakness = 1,
                                 intercept = FALSE,
@@ -181,51 +181,51 @@ stability.selection <- function(x, y,
   # Dimensions
   n <- nrow(x)
   p <- ncol(x)
-  
+
   # Subsample size
   n.sel <- floor(fraction * n)
-  
+
   # Variable bound
   q <- ceiling(sqrt(EV * p * (2 * threshold - 1))) # (9)
   #   cat(sprintf("\nq = %d\n", q))
-  
+
   # Subsampling
 #   registerDoMC(cores=ncores)
   cl <- makeCluster(ncores)
   registerDoParallel(cl)
   sel.mat <- foreach (b = 1:nbootstrap, .combine =rbind) %dopar% {
     # Current sub-sampled data
-    sel <- sample(1:n, n.sel, replace=FALSE)        
+    sel <- sample(1:n, n.sel, replace=FALSE)
     # Get selected model
     fit <- lasso.rand(x=x, y=y, subsample=sel, dfmax=q, weakness=weakness, intercept=intercept, ...)
     return(.select.model(fit, q))
   }
-  
+
   # Get selection frequencies
   freq <- colMeans(sel.mat)
-  names(freq) <- colnames(x)  
+  names(freq) <- colnames(x)
   sel.current <- which(freq >= threshold)
   names(sel.current) <- colnames(x)[sel.current]
-  
+
   # fit model
   x.sel <- as.matrix(x[,sel.current])
   rownames(x.sel) <- rownames(x)
   colnames(x.sel) <- colnames(x)[sel.current]
   model <- lm(as.matrix(y) ~ as.matrix(x.sel) - 1) # as.matrix() ?
-  
+
   # Stop the cluster
   stopCluster(cl)
 
   out <- list(model = model, matrix = sel.mat, frequency = freq, selection = sel.current)
-  return(out)  
+  return(out)
 }
 
 
 #' Model selector (taken from hdi package)
-#' 
+#'
 #' @author Fabian Schmich
 #' @noRd
-#' 
+#'
 #' @param fit A (randomised lasso) model
 #' @param q The variable bound
 #' @return A vector indicating the selected model
@@ -239,5 +239,5 @@ stability.selection <- function(x, y,
   delta[delta < 0] <- Inf # overshooting not allowed
   nz <- nz[[which.min(delta)]] # takes first occurrence
   p.sel[nz] <- TRUE # set selected to TRUE
-  return(p.sel) 
+  return(p.sel)
 }

@@ -110,7 +110,7 @@ setMethod("gespeR",
                                                           ...)
             )
             if (mode == "cv") {
-              gsp <- cBind(model$coefficients[-1,])
+              gsp <- cbind(model$coefficients[-1,])
               gsp[which(gsp == 0)] <- NA
             } else if (mode == "stability") {
               gsp <- rep(NA,length(xy$targets@genes))
