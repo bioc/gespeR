@@ -17,7 +17,7 @@ Depends:
     R(>= 2.10)
 Suggests:
     knitr
-biocViews: CellBasedAssays,
+biocViews: ImmunoOncology, CellBasedAssays,
     Preprocessing,
     GeneTarget,
     Regression,
@@ -26,7 +26,7 @@ VignetteBuilder: knitr
 Type: Package
 Lazyload: yes
 Title: Gene-Specific Phenotype EstimatoR
-Version: 1.14.0
+Version: 1.14.1
 Date: 2015-07-22
 Author: Fabian Schmich
 Maintainer: Fabian Schmich <fabian.schmich@bsse.ethz.ch>
